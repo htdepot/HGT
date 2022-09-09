@@ -188,9 +188,8 @@ def main(args):
     else:
         args.save_parameter_path = args.save_parameter_path + '/' + model_cfg['backbone']['type'] + '/_best_parameter.pth'
 
-    InputPatch, TargetPatch = np.ones([1, 120, 160, 30]), np.ones([1, 120, 160, 3])
-    #InputPatch, TargetPatch = get_concatenate_data(args.data_path, args.train_subject_id, args.train_data_name
-    #                                               , args.train_gt_data_name)
+    InputPatch, TargetPatch = get_concatenate_data(args.data_path, args.train_subject_id, args.train_data_name
+                                                   , args.train_gt_data_name)
     input = list(InputPatch)
     targets = list(TargetPatch)
 
