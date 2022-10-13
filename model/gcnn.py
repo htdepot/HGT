@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import ChebConv
@@ -5,15 +6,15 @@ from torch_geometric.nn import ChebConv
 
 
 class GCNN(nn.Module):
-    def __init__(self, in_channel, features, out_channel, K, gradient_direction,  hidden):
+    def __init__(self, in_channel, features, out_channel, K, hidden):
         super(GCNN, self).__init__()
-        self.conv1_1 = ChebConv(in_channel, features, K=K)
+        self.conv1_1 = ChebConv(1, features, K=K)
         self.conv1_2 = ChebConv(features, features, K=K)
         self.conv1_3 = ChebConv(features, features, K=K)
         self.conv2_1 = ChebConv(features, features, K=K)
         self.conv2_2 = ChebConv(features, features, K=K)
         self.conv3_1 = ChebConv(features, features, K=K)
-        self.lin1 = nn.Linear(features * gradient_direction, hidden)
+        self.lin1 = nn.Linear(features * in_channel, hidden)
         self.lin2 = nn.Linear(hidden, hidden)
         self.lin3 = nn.Linear(hidden, out_channel)
 

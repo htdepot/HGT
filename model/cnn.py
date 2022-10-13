@@ -14,6 +14,7 @@ class CNN(nn.Module):
         self.conv4 = nn.Conv2d(hidden * 2, out_channel, kernel_size=1)
 
     def forward(self, data):
+        data = data.permute(0, 3, 1, 2).contiguous()
         out = F.relu(self.conv0(data))
         temp = out
         out = F.relu(self.conv1_1(out))
@@ -25,4 +26,4 @@ class CNN(nn.Module):
         out = F.relu(self.conv3_2(out))
         out = out + temp
         out = self.conv4(out)
-        return out
+        return out.permute(0, 2, 3, 1).contiguous()

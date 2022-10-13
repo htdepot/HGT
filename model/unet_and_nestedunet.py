@@ -47,6 +47,7 @@ class UNet(nn.Module):
 
 
     def forward(self, input):
+        input = input.permute(0, 3, 1, 2).contiguous()
         x0_0 = self.conv0_0(input)
         x1_0 = self.conv1_0(self.pool(x0_0))
         x2_0 = self.conv2_0(self.pool(x1_0))
@@ -59,7 +60,7 @@ class UNet(nn.Module):
         x0_4 = self.conv0_4(self.padding_cat(x1_3, x0_0))
 
         output = self.final(x0_4)
-        return output
+        return output.permute(0, 2, 3, 1).contiguous()
 
     def padding_cat(self, x1, x2):
         x1 = self.up(x1)
@@ -115,7 +116,7 @@ class NestedUNet(nn.Module):
 
 
     def forward(self, input):
-
+        input = input.permute(0, 3, 1, 2).contiguous()
         x0_0 = self.conv0_0(input)
         x1_0 = self.conv1_0(self.pool(x0_0))
         x0_1 = self.conv0_1(self.padding_cat(x1_0, x0_0))
@@ -144,7 +145,7 @@ class NestedUNet(nn.Module):
 
         else:
             output = self.final(x0_4)
-            return output
+            return output.permute(0, 2, 3, 1).contiguous()
 
     def padding_cat(self, x1, x2):
         x1 = self.up(x1)
