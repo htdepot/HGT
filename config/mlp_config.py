@@ -15,7 +15,7 @@ data_cfg = dict(
     is_voxel=True,
     need_edge=False,
     train=dict(
-        pretrained_flag=True,
+        pretrained_flag=False,
         pretrained_weights='./parameter/mlp_best_parameter.pkl',
         epoches=190,
     ),

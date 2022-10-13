@@ -14,10 +14,11 @@ data_cfg = dict(
     batch_size=128,
     num_workers=1,
     is_voxel=True,
-    need_edge=Truee,
+    need_edge=False,
     edge=dict(
         bval_name='bvals',
         bvec_name='bvecs',
+        image_shape=[0, 0],
         angle=60
     ),
     train=dict(
