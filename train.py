@@ -78,7 +78,7 @@ def build_scheduler(lr_config, optimizer):
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description="predictive microstructure model")
-    parser.add_argument("--config", default='./config/gcnn_config.py',
+    parser.add_argument("--config", default='./config/hgt_config.py',
                         type=str, help="Run the model config file address")
     parser.add_argument("--train_subject_id", default=['748662', '751348', '859671', '761957', '833148',
                                                        '837560', '845458', '896778', '898176', '100610',
@@ -120,6 +120,8 @@ def parse_args():
     return args
 
 def test(test_loader, edge_index, model, test_start_time, subject_id, device, is_voxel, model_name, kwargs):
+    if edge_index is not None:
+        edge_index = edge_index[1].to(device)
     for i, data in tqdm(enumerate(test_loader, 0), total=len(test_loader), desc='test'):
         model.eval()
         if model_name == 'GCNN':
@@ -131,7 +133,6 @@ def test(test_loader, edge_index, model, test_start_time, subject_id, device, is
             test_input = test_input.to(device)
 
         if edge_index is not None:
-            edge_index = edge_index[1].to(device)
             out = model(test_input, edge_index)
         else:
             out = model(test_input)
@@ -159,6 +160,8 @@ def train(train_loader, model, optimizer, scheduler, edge_index, device, is_voxe
     total_index3_loss = 0
     batch_number = 0
     epoch_time = time.time()
+    if edge_index is not None:
+        edge_index = edge_index[0].to(device)
     for i, data in tqdm(enumerate(train_loader, 0), total=len(train_loader), desc='train'):
         model.train()
         batch_number += 1
@@ -172,9 +175,7 @@ def train(train_loader, model, optimizer, scheduler, edge_index, device, is_voxe
             label = label.to(device)
             input = input.type(torch.FloatTensor)
             input = input.to(device)
-
         if edge_index is not None:
-            edge_index = edge_index[0].to(device)
             out = model(input, edge_index)
         else:
             out = model(input)
