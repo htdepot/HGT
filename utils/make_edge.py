@@ -1,3 +1,5 @@
+import os
+from tqdm import tqdm
 import torch
 import numpy as np
 
@@ -49,6 +51,7 @@ def ConvertBVal(bvalarr, offset = 10, div = 1000):
     bvalarr = bvalarr + offset
     bvalarr = bvalarr/div
     return bvalarr
+
 def RemoveB0Element(bval, bvec):
     noB0Vol = np.count_nonzero(bval)
     newbval = np.zeros(noB0Vol)
@@ -137,14 +140,13 @@ def calculate_adjacency_matrix(bval, bvec, threshold_angle):
                 adj[x, y] = 1
             else:
                 adj[x, y] = 0
-    # np.savetxt('angel_adj.txt', angle_adj, fmt='%d')
-    # np.savetxt('adj.txt', adj, fmt='%d')
     return adj
 
 
-def make_edge(data_path, angel_threshold, gradient_direaction):
-    bvalfile = data_path + '/bvals'
-    bvecfile = data_path + '/bvecs'
+def make_edge(data_path, angel_threshold, gradient_direaction, bval_name, bvec_name, image_shape, batch, save_path, model_name):
+    number = image_shape[0] * image_shape[1] * batch
+    bvalfile = os.path.join(data_path, bval_name)
+    bvecfile = os.path.join(data_path, bvec_name)
     bval, bvec = ReadBValAndBVec(bvalfile, bvecfile)
     if gradient_direaction == 60:
         bval, bvec = delete_60_b0(bval, bvec)
@@ -159,12 +161,17 @@ def make_edge(data_path, angel_threshold, gradient_direaction):
     eye = torch.eye(adj.size(0))
     one = torch.ones_like(adj)
     mask = one - eye
-    # zero = torch.zeros_like(adj)
     adj = adj * mask
-    # adj = torch.where(adj > edge_weight_threshold, one, zero)
     edge_index = edge_index_from_adj(adj)
-
-    edge_index = np.array(edge_index, dtype=np.int64)
-    print(edge_index.shape)
-    edge_index = torch.LongTensor(edge_index)
-    return edge_index
+    if model_name == 'GCNN':
+        edge_index = np.array(edge_index, dtype=np.int64)
+        print(edge_index.shape)
+        edge_index = torch.LongTensor(edge_index)
+        return edge_index
+    else:
+        ori_edge_index = edge_index
+        for i in tqdm(range(1, number), total=number - 1, desc='edge'):
+            next_edge_index = ori_edge_index + i * gradient_direaction
+            edge_index = np.concatenate((edge_index, next_edge_index), axis=1)
+        print(edge_index.shape)
+        torch.save(edge_index, save_path)

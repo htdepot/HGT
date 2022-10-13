@@ -31,8 +31,8 @@ def get_concatenate_data(data_path, subject_id, file_name, file_gt_name):
     gt_data_list = []
     for file_name_id in subject_id:
         print('Reading Reading hcp data sub_ID: '+ str(file_name_id))
-        data = np.load(data_path + str(file_name_id) + '/' + file_name)
-        gt_data = np.load(data_path + str(file_name_id) + '/' + file_gt_name)
+        data = np.load(os.path.join(data_path, str(file_name_id) + '/' + file_name))
+        gt_data = np.load(os.path.join(data_path, str(file_name_id) + '/' + file_gt_name))
         data_list.append(data)
         gt_data_list.append(gt_data)
         print('Reading finished!')
@@ -152,8 +152,8 @@ def computer_psnr(gt_data, prediction_data, model_name, is_train):
             return ak_psnr_value, mk_psnr_value, rk_psnr_value, all_dki_psnr_value, ak_nrmse_value, mk_nrmse_value, rk_nrmse_value, all_dki_nrmse_value, \
                    ak_ssim_value, mk_ssim_value, rk_ssim_value, all_dki_ssim_value
 
-def restore_img(subject_id, gt, prediction, **args):
-    mask_file = args.data_path + subject_id + '/' + args.ask_name
+def restore_img(subject_id, gt, prediction, is_voxel, args):
+    mask_file = os.path.join(os.path.join(args.data_path, subject_id), args.mask_name)
     mask = nib.load(mask_file)
     mask = mask.get_fdata()
     x_size = mask.shape[0]
@@ -164,48 +164,60 @@ def restore_img(subject_id, gt, prediction, **args):
     psnr_gt = []
     psnr_prediction = []
 
-
-    if os.path.exists(args.brain_max_lenght):
-        list_lenght = np.load(args.brain_max_lenght)
-        xx_min, xx_max, yy_min, yy_max = list_lenght[0], list_lenght[1], list_lenght[2], list_lenght[3]
+    if is_voxel:
+        start = -1
+        for xx in range(0, x_size, 1):
+            for yy in range(0, y_size, 1):
+                for zz in range(0, z_size, 1):
+                    if (mask[xx, yy, zz] > 0):
+                        start += 1
+                        gt_like[xx, yy, zz, :] = gt[start, :]
+                        prediction_like[xx, yy, zz, :] = prediction[start, :]
+                        psnr_gt.append(gt[start, :])
+                        psnr_prediction.append(prediction[start, :])
     else:
-        print('Missing brain length file')
 
-    edge_distance_x_start = xx_min
-    edge_distance_x_ed = xx_max
-    x_length = xx_max - xx_min
-    x_final_length = math.ceil(x_length / 10) * 10
-    x_add_length = x_final_length - x_length
-    x_left_add_length = math.floor(x_add_length / 2)
+        if os.path.exists(args.brain_max_lenght):
+            list_lenght = np.load(args.brain_max_lenght)
+            xx_min, xx_max, yy_min, yy_max = list_lenght[0], list_lenght[1], list_lenght[2], list_lenght[3]
+        else:
+            print('Missing brain length file')
 
-    edge_distance_y_start = yy_min
-    edge_distance_y_ed = yy_max
-    y_length = yy_max - yy_min
-    y_final_length = math.ceil(y_length / 10) * 10
-    y_add_length = y_final_length - y_length
-    y_left_add_length = math.floor(y_add_length / 2)
+        edge_distance_x_start = xx_min
+        edge_distance_x_ed = xx_max
+        x_length = xx_max - xx_min
+        x_final_length = math.ceil(x_length / 10) * 10
+        x_add_length = x_final_length - x_length
+        x_left_add_length = math.floor(x_add_length / 2)
 
-    for i in range(0, z_size, 1):
-        prediction_like[edge_distance_x_start:edge_distance_x_ed, edge_distance_y_start:edge_distance_y_ed, i, :] = prediction[i, x_left_add_length:x_left_add_length + x_length, y_left_add_length:y_left_add_length + y_length, :]
-        gt_like[edge_distance_x_start:edge_distance_x_ed, edge_distance_y_start:edge_distance_y_ed, i, :] = gt[i, x_left_add_length:x_left_add_length + x_length, y_left_add_length:y_left_add_length + y_length, :]
+        edge_distance_y_start = yy_min
+        edge_distance_y_ed = yy_max
+        y_length = yy_max - yy_min
+        y_final_length = math.ceil(y_length / 10) * 10
+        y_add_length = y_final_length - y_length
+        y_left_add_length = math.floor(y_add_length / 2)
+
+        for i in range(0, z_size, 1):
+            prediction_like[edge_distance_x_start:edge_distance_x_ed, edge_distance_y_start:edge_distance_y_ed, i, :] = prediction[i, x_left_add_length:x_left_add_length + x_length, y_left_add_length:y_left_add_length + y_length, :]
+            gt_like[edge_distance_x_start:edge_distance_x_ed, edge_distance_y_start:edge_distance_y_ed, i, :] = gt[i, x_left_add_length:x_left_add_length + x_length, y_left_add_length:y_left_add_length + y_length, :]
 
 
-    for xx in range(edge_distance_x_start, edge_distance_x_ed, 1):
-        for yy in range(edge_distance_y_start, edge_distance_y_ed, 1):
-            for zz in range(0, z_size, 1):
-                if mask[xx, yy, zz] > 0:
-                    psnr_gt.append(gt_like[xx, yy, zz, :])
-                    psnr_prediction.append(prediction_like[xx, yy, zz, :])
-                else:
-                    gt_like[xx, yy, zz, :] = 0
-                    prediction_like[xx, yy, zz, :] = 0
+        for xx in range(edge_distance_x_start, edge_distance_x_ed, 1):
+            for yy in range(edge_distance_y_start, edge_distance_y_ed, 1):
+                for zz in range(0, z_size, 1):
+                    if mask[xx, yy, zz] > 0:
+                        psnr_gt.append(gt_like[xx, yy, zz, :])
+                        psnr_prediction.append(prediction_like[xx, yy, zz, :])
+                    else:
+                        gt_like[xx, yy, zz, :] = 0
+                        prediction_like[xx, yy, zz, :] = 0
 
     psnr_gt = np.array(psnr_gt)
     psnr_prediction = np.array(psnr_prediction)
 
-    if is_generate_image:
+    if args.is_generate_image:
         affine = np.eye(4)
         img_prediction = nib.Nifti1Image(prediction_like, affine)
-        nib.save(img_prediction, image_file_path)
+        nib.save(img_prediction, args.generate_image_save_path)
         print('save img successful')
     return computer_psnr(psnr_gt, psnr_prediction, args.microstructure_name, args.is_train)
