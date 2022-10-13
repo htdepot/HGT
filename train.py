@@ -1,15 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''
-Created on Sat Mar 24 09:59:10 2021
-
-@author: Jiquan
-
-Graph-based on pytorch geometric
-'''
 import os.path as osp
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import time
 
 import torch
