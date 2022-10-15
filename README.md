@@ -1,5 +1,5 @@
 # Inferring Tissue Microstructure from Undersampled Diffusion MRI via a Hybrid Graph Transformer
-##Brief
+## Brief
 This is an implementation of **Inferring Tissue Microstructure from Undersampled Diffusion MRI via a Hybrid Graph Transformer** by **Pytorch**.
 
 We jointly consider the information in both x-space and q-space with our HGT, overcoming the limitations of existing methods that are unable to make full use of joint x-q space information.
@@ -23,15 +23,14 @@ The results of prediction DKI on 30 gradient directions on one shells are as fol
 
 ## Usage
 ### Environment
-
 ```python
 pip install -r requirement.txt
 ```
 If you are installing in a linux environment, you can run the following actions.
-```python
+```bash
 bash install.sh
 ```
-###Pretrained Model
+### Pretrained Model
 
 The parameters of the pre-trained model are the default parameters in the code.
 
@@ -72,7 +71,7 @@ data/
 python prepare_data.py  --path [dataset root]
 ```
 
-###Training
+### Training
 
 ```python
 # To train the DKI model you only need to change the microstructure_name
