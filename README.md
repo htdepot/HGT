@@ -23,6 +23,7 @@ The results of prediction DKI on 30 gradient directions on one shells are as fol
 
 ## Usage
 ### Environment
+
 ```python
 pip install -r requirement.txt
 ```
@@ -31,6 +32,7 @@ If you are installing in a linux environment, you can run the following actions.
 bash install.sh
 ```
 ###Pretrained Model
+
 The parameters of the pre-trained model are the default parameters in the code.
 
 | Tasks                                          | Platform                                                      | 
@@ -47,6 +49,7 @@ The parameters of the pre-trained model are the default parameters in the code.
 )
 ```
 ### Data Prepare
+
 Using HGT requires protocol of data is same. If it is not consistent, you can remove the q-Space Learning Module, but the performance will deteriorate. At first, you should organize the images layout like this(Take HCP data as an example), this step can be finished by `prepare_data.py` automatically:
 
 ```shell 
@@ -70,12 +73,14 @@ python prepare_data.py  --path [dataset root]
 ```
 
 ###Training
+
 ```python
 # To train the DKI model you only need to change the microstructure_name
 python train.py --config './config/hgt_config.py' --microstructure_name 'NODDI'
 ```
 
 ### Test/Evaluation
+
 ```python
 # To train the DKI model you only need to change the microstructure_name
 # If you do not want to generate a prediction file just change --is_generate_image to False
@@ -83,6 +88,7 @@ python test.py --config './config/hgt_config.py' --microstructure_name 'NODDI' -
 ```
 
 ## Acknowledge
+
 This work was supported in part by the National Natural Science Foundation of China under Grant 62201465,
 the Fundamental Research Funds for the Central Universities under Grant D5000220213,
 the Natural Science Foundation of Heilongjiang Province under Grant LH2021F046, 
