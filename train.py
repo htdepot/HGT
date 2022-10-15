@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+'''
+Created on Sat Mar 24 09:59:10 2021
+
+@author: Jiquan
+
+Graph-based on pytorch geometric
+'''
 import os.path as osp
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 import time
 
 import torch
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
-import nibabel as nib
 import numpy as np
 from tqdm import tqdm
 
@@ -205,11 +211,10 @@ def main(args):
         os.mkdir(args.save_parameter_path + '/' + model_cfg['backbone']['type'])
 
     if data_cfg['train']['pretrained_flag'] == True:
-        args.save_parameter_path = args.save_parameter_path + '/' + model_cfg['backbone']['type'] + '_pre_best_parameter.pth'
+        args.save_parameter_path = args.save_parameter_path + '/' + model_cfg['backbone']['type'] + str(time.time()) + '_pre_best_parameter.pth'
     else:
-        args.save_parameter_path = args.save_parameter_path + '/' + model_cfg['backbone']['type'] + '_best_parameter.pth'
+        args.save_parameter_path = args.save_parameter_path + '/' + model_cfg['backbone']['type'] + str(time.time()) + '_best_parameter.pth'
 
-    #InputPatch, TargetPatch = np.ones([1, 120, 160, 30]), np.ones([1, 120, 160, 3])
     InputPatch, TargetPatch = get_concatenate_data(args.data_path, args.train_subject_id, args.train_data_name
                                                    , args.train_gt_data_name)
     if model_cfg['backbone']['type'] == 'GCNN':
@@ -307,7 +312,6 @@ def main(args):
                 test_start_time = time.time()
                 subject_list = []
                 subject_list.append(subject_id)
-                #Test_InputPatch, Test_TargetPatch = np.ones([145, 120, 160, 30]), np.ones([145, 120, 160, 3])
                 Test_InputPatch, Test_TargetPatch = get_concatenate_data(args.data_path, subject_list,
                                                                          args.test_data_name, args.test_gt_data_name)
                 if model_cfg['backbone']['type'] == 'GCNN':
