@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import types
 sys.path.insert(0,os.getcwd())
 import importlib
@@ -216,6 +217,7 @@ def restore_img(subject_id, gt, prediction, is_voxel, args):
     psnr_prediction = np.array(psnr_prediction)
 
     if args.is_generate_image:
+        args.generate_image_save_path = os.path.join(args.generate_image_save_path, subject_id + str(time.time()) + 'nii.gz' )
         affine = np.eye(4)
         img_prediction = nib.Nifti1Image(prediction_like, affine)
         nib.save(img_prediction, args.generate_image_save_path)
