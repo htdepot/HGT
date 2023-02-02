@@ -2,23 +2,23 @@
 ## Brief
 This is an implementation of **Inferring Tissue Microstructure from Undersampled Diffusion MRI via a Hybrid Graph Transformer** by **Pytorch**.
 
-We jointly consider the information in both x-space and q-space with our HGT, overcoming the limitations of existing methods that are unable to make full use of joint x-q space information.
+In this work, we jointly consider the information in both x-space and q-space, overcoming the limitations of existing methods that are unable to make full use of joint x-q space information. The highlights of our work lie in three-fold:
 
-- We have performed extensive experiments on the [HCP](https://db.humanconnectome.org/) data to evaluate our HGT.
-- We predicted typical microstructure models such as NODDI and DKI
-- We uniformly select 30 gradients with b = 1000 s/$\text{mm}^{\text{2}}$ from the raw HCP data to simulate the undersampled DMRI data used as input to train our model.
-- Another undersampling pattern is a two-shell case with 60 uniform gradients, i.e., 30 for b = 1000 s/$\text{mm}^{\text{2}}$, 30 for b = 2000 s/$\text{mm}^{\text{2}}$, which is recommended for typical microstructure models, such as NODDI.
+- We propose a hybrid graph transformer (HGT) to jointly consider the information in both x-space and q-space for improving the accuracy of microstructural estimation.
+- Our HGT is the first transformer dedicated to microstructure estimation with an improved architecture equipped with residual and dense connections.
+- Extensive experiments on data from the [Human Connectome Project](https://db.humanconnectome.org/) demonstrate the advantages of our HGT over cutting-edge models.
 
 ## Model
 <img src="./misc/model.png" alt="show" style="zoom:90%;" />
-The model is divided into two modules: q-space learning with a GNN and x-space learning with a Transformer. CRDT denotes Cascaded Residual Dense Transformer. TransLayer is short for the Transformer layer. SRA denotes spatial-reduction attention. Finally, after a linear layer, the expected microstructure estimations are obtained
+An overview of HGT. The model consists of two modules: q-space learning with a GNN and x-space learning with a transformer. RDT: Residual Dense Transformer; TransLayer: Transformer layer; SRA: Spatial-Reduction Attention.
 
 ## Results
 We trained the network with an NVIDIA GeForce GTX 2080 GPU with 8GB RAM.
 
-The results of prediction NODDI on 30 gradient directions on one shell are as follows.
+Quantitative evaluation of NODDI indices using PSNR, SSIM, and NRMSE for single-shell undersampled data (30 gradient directions total for b=1000 s/mm2). The best results are in **bold**.
 <img src="./misc/result_noddi_30.png" alt="show" style="zoom:90%;" />
-The results of prediction DKI on 30 gradient directions on one shells are as follows.
+
+Quantitative evaluation of DKI indices using PSNR, SSIM, and NRMSE for single-shell undersampled data (30 gradient directions total for b=1000 s/mm2). The best results are in **bold**.
 <img src="./misc/result_dki_30.png" alt="show" style="zoom:90%;" />
 
 ## Usage
@@ -47,9 +47,9 @@ The parameters of the pre-trained model are the default parameters in the code.
        "pretrained_weights" = [your pretrain model path]
 )
 ```
-### Data Prepare
+### Data Preparation
 
-Using HGT requires protocol of data is same. If it is not consistent, you can remove the q-Space Learning Module, but the performance will deteriorate. At first, you should organize the images layout like this(Take HCP data as an example), this step can be finished by `prepare_data.py` automatically:
+First, you should organize the data as follows:
 
 ```shell 
 data/
@@ -66,6 +66,8 @@ data/
 ├── bvec 
 └── bval
 ```
+
+ Second, you can run `prepare_data.py` to process the data:
 
 ```python
 python prepare_data.py  --path [dataset root]
@@ -88,13 +90,7 @@ python test.py --config './config/hgt_config.py' --microstructure_name 'NODDI' -
 
 ## Acknowledge
 
-This work was supported in part by the National Natural Science Foundation of China under Grant 62201465,
-the Fundamental Research Funds for the Central Universities under Grant D5000220213,
-the Natural Science Foundation of Heilongjiang Province under Grant LH2021F046, 
-the National Natural Science Foundation of China under Grant 62171377, 
-and the Key Research and Development Program of Shaanxi Province under Grant 2022GY-084. P.-T. Yap was supported in part by the United States National Institutes of Health (NIH) through grant MH125479
-
-and we are benefiting a lot from the following projects:
+We implment the code by referring to the following projects:
 
 - https://github.com/pyg-team/pytorch_geometric
 - https://github.com/4uiiurz1/pytorch-nested-unet
