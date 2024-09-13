@@ -1,0 +1,3 @@
+train_subject_ids = ['sub_104', 'sub_105', 'sub_130', 'sub_131', 'sub_132', 'sub_133', 'sub_134', 'sub_109', 'sub_114', 'sub_156', 'sub_115', 'sub_117', 'sub_139', 'sub_140', 'sub_141', 'sub_122', 'sub_125', 'sub_159', 'sub_147', 'sub_149']
+val_subject_ids ['sub_111', 'sub_127', 'sub_153']
+test_subject_id = ['sub_128', 'sub_129', 'sub_106', 'sub_107', 'sub_108', 'sub_136', 'sub_137', 'sub_138', 'sub_112', 'sub_110', 'sub_144', 'sub_145', 'sub_118', 'sub_119', 'sub_120', 'sub_146', 'sub_123', 'sub_124', 'sub_154', 'sub_160']
