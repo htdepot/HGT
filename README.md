@@ -30,23 +30,6 @@ If you are installing in a linux environment, you can run the following actions.
 ```bash
 bash install.sh
 ```
-### Pretrained Model
-
-The parameters of the pre-trained model are the default parameters in the code.
-
-| Tasks                                          | Platform                                                      | 
-|------------------------------------------------|---------------------------------------------------------------|
-| NODDI on 30 gradient directions on one shell   | [Baidu Yun](https://) / [Google Drive](https://)
-| NODDI on 60 gradient directions on two shells  | [Baidu Yun](https://) / [Google Drive](https://) 
-| DKI on 30 gradient directions on one shell     | [Baidu Yun](https://) / [Google Drive](https://)
-
-```python
-# Download the pretrain model and edit [use model]_config.py about "pretrained_flag" and "pretrained_weights" :
-"train"="dict" (
-       "pretrained_flag" = True,
-       "pretrained_weights" = [your pretrain model path]
-)
-```
 ### Data Preparation
 
 First, you should organize the data as follows:
