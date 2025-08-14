@@ -70,6 +70,9 @@ python train.py --config './config/hgt_config.py' --microstructure_name 'NODDI'
 # If you do not want to generate a prediction file just change --is_generate_image to False
 python test.py --config './config/hgt_config.py' --microstructure_name 'NODDI' --is_generate_image True
 ```
+### Trianed Parameter
+
+[Predicted NODDI using 30 gradient directions dMRI](https://drive.google.com/file/d/14_GE-ijcWq4xKWS2g0hkbdpHmbO9omYV/view?usp=drive_link)
 
 ## Acknowledge
 
@@ -78,3 +81,4 @@ We implment the code by referring to the following projects:
 - https://github.com/pyg-team/pytorch_geometric
 - https://github.com/4uiiurz1/pytorch-nested-unet
 - https://github.com/whai362/PVT
+
