@@ -77,6 +77,11 @@ python test.py --config './config/hgt_config.py' --microstructure_name 'NODDI' -
 
 
 [Predicted NODDI using 60 gradient directions dMRI](https://drive.google.com/file/d/1rpXAgPLs5dq1DALvrWX7OXcsEk0QRVu1/view?usp=drive_link)
+
+
+
+[Predicted DKI using 30 gradient directions dMRI](https://drive.google.com/file/d/1rpXAgPLs5dq1DALvrWX7OXcsEk0QRVu1/view?usp=drive_link)
+
 ## Acknowledge
 
 We implment the code by referring to the following projects:
@@ -84,6 +89,7 @@ We implment the code by referring to the following projects:
 - https://github.com/pyg-team/pytorch_geometric
 - https://github.com/4uiiurz1/pytorch-nested-unet
 - https://github.com/whai362/PVT
+
 
 
 
